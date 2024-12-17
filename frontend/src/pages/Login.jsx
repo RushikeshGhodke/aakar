@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useDispatch} from 'react-redux';
-import {loginSuccess} from '../store/authSlice'; // Adjust the path as necessary
+import {login} from '../features/authSlice.js'; // Adjust the path as necessary
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import {FiLock, FiUser} from 'react-icons/fi';
@@ -16,25 +16,30 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            // Make login request with email and password
-            const response = await axios.post('http://localhost:3000/api/v1/employee/loginEmployee',
-                {employeeEmail: email, employeePassword: password},
-                {withCredentials: true} // To send cookies along with the request
-            );
-
-            // Destructure tokens and accessString from response
-            const {accessToken, refreshToken, accessString} = response.data;
-
-            // Dispatch loginSuccess action to store the tokens and access string
-            dispatch(loginSuccess({accessToken, refreshToken, accessString}));
-
-            // Redirect to the home page or dashboard
-            navigate('/');
-        } catch (err) {
-            // Handle error if login fails
-            setError('Invalid email or password. Please try again.');
-        }
+        dispatch(login({
+            email,
+            password,
+        }));
+        // try {
+        //     // Make login request with email and password
+        //     const response = await axios.post('http://localhost:3000/api/v1/employee/loginEmployee',
+        //         {employeeEmail: email, employeePassword: password},
+        //         {withCredentials: true}
+        //     );
+        //
+        //     console.log(response.data.data);
+        //
+        //     // Destructure tokens and accessString from response
+        //     const {accessToken, refreshToken, accessString} = response.data;
+        //
+        //     // Dispatch loginSuccess action to store the tokens and access string
+        //
+        //     // Redirect to the home page or dashboard
+        //     navigate('/');
+        // } catch (err) {
+        //     // Handle error if login fails
+        //     setError('Invalid email or password. Please try again.');
+        // }
     };
 
     return (

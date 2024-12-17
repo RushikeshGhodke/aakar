@@ -8,15 +8,15 @@
 }
 
 .infocard {
-    width: 195px;
-    padding: 10px 15px 10px 15px;
-    border-radius: 10px;
+    width: max-content;
+    padding: 6px 15px 6px 15px;
+    border-radius: 4px;
     display: flex;
     justify-content: space-between;
     color: #413B3B;
     box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.04), 0px 8px 16px 0px rgba(0, 0, 0, 0.08);
     margin-right: 30px;
-    margin-bottom: 15px;
+    /*margin-bottom: 15px;*/
     background-color: #FFFFFF;
 }
 

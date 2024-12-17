@@ -7,8 +7,6 @@ const Home = () => {
     return (
         <>
             <div>Welcome to the ERP Dashboard!</div>
-            {/*<LogoutButton/>*/}
-            {/*<Layout/>/*/}
         </>
     )
 };

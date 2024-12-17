@@ -23,12 +23,13 @@ export const getAllDepartments = asyncHandler(async (req, res) => {
 // Get working / live / open departments - where departmentEndDate is NULL
 export const getAllWorkingDepartments = asyncHandler(async (req, res) => {
     const query = 'SELECT * FROM department WHERE departmentEndDate IS NULL'
-
+    console.log("Backend Req for getAllWorkingDept")
     connection.query(query, (err, data) => {
         if (err) {
             const error = new ApiError(400, 'Error retrieving live/open departments.')
             return res.status(400).json(error.toJSON())
         }
+
         res
             .status(200)
             .json(new ApiResponse(200, data, 'All live/open departments retrieved successfully.'))

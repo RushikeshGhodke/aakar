@@ -11,7 +11,7 @@ const Infocard = ({icon, number, text, className, width}) => {
         {icon === `<FiAlertCircle />` && <FiAlertCircle size={40} fontWeight={300} />}
         {icon === `<FiCheckCircle />` && <FiCheckCircle size={40} fontWeight={300} />}
         {icon === `<FiUser />` && <FiUser size={40} fontWeight={300} />}
-        {icon === `<FiBriefcase  />` && <FiBriefcase  size={40} fontWeight={300} />}
+        {icon === `<FiBriefcase />` && <FiBriefcase  size={40} fontWeight={300} />}
         <div className='info'>  
             <div className='info-number'>
                 {number}

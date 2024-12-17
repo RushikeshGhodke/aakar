@@ -5,6 +5,7 @@ import departmentRoute from "./routes/department.route.js";
 import employeeRoute from "./routes/employee.route.js";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.routes.js";
+import designationRoute from "./routes/designation.route.js";
 
 const app = express();
 
@@ -30,3 +31,4 @@ app.listen(port,"0.0.0.0", () => {
 app.use("/api/v1/auth/", authRoutes);
 app.use("/api/v1/department/", departmentRoute);
 app.use("/api/v1/employee/", employeeRoute);
+app.use("/api/v1/designation/", designationRoute);

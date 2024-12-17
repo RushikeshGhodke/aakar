@@ -20,8 +20,11 @@ import { jsPDF } from 'jspdf';
 import 'jspdf-autotable'; // Required for auto table
 import * as XLSX from 'xlsx'; // Required for Excel
 import './TableComponent.css';
+import Searchbar from "../../pages/employee/Searchbox/Searchbar.jsx";
+import { FiDownload } from "react-icons/fi";
 
-const TableComponent = ({ rows, columns, linkBasePath }) => {
+
+const TableComponent = ({ rows, columns, linkBasePath, itemName }) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [order, setOrder] = useState('asc');
@@ -108,17 +111,26 @@ const TableComponent = ({ rows, columns, linkBasePath }) => {
 
     return (
         <Box>
-            <Button variant="contained" onClick={handleDownloadClick}>
-                Download
-            </Button>
-            <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-            >
-                <MenuItem onClick={() => downloadFile('excel')}>Download as Excel</MenuItem>
-                <MenuItem onClick={() => downloadFile('pdf')}>Download as PDF</MenuItem>
-            </Menu>
+            <div className={`flex items-center justify-between`}>
+                <Searchbar
+                    items={rows}
+                    itemKey="de" // Assuming each employee has an empId as a unique key
+                    itemLabel={itemName} // Name to search by
+                    navigateTo={linkBasePath}
+                />
+                <div className={`hover:cursor-pointer border-2 border-[#0061A1] rounded px-4 py-1.5 font-semibold text-[#0061A1] flex justify-between items-center gap-3`} onClick={handleDownloadClick}>
+                    <FiDownload />
+                    <p>Download</p>
+                </div>
+                <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
+                >
+                    <MenuItem onClick={() => downloadFile('excel')}>Download as Excel</MenuItem>
+                    <MenuItem onClick={() => downloadFile('pdf')}>Download as PDF</MenuItem>
+                </Menu>
+            </div>
 
             <Paper className="table-container">
                 <TableContainer className="custom-scrollbar">
@@ -185,7 +197,7 @@ const TableComponent = ({ rows, columns, linkBasePath }) => {
 
                                     return (
                                         <TableRow key={uuidv4()} {...rowProps}>
-                                            <TableCell align="center">
+                                            <TableCell align="left">
                                                 {(page * rowsPerPage) + index + 1}
                                             </TableCell>
                                             {columns.map((column) => (

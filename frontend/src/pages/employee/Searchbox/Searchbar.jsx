@@ -43,7 +43,8 @@ function Searchbar({ items, itemKey, itemLabel, navigateTo }) {
                     <TextField
                         {...params}
                         variant="outlined"
-                        placeholder={`Search for ${itemLabel.toLowerCase()}`}
+                        // placeholder={`Search for ${itemLabel.toLowerCase()}`}
+                        placeholder={`Search`}
                         InputProps={{
                             ...params.InputProps,
                             startAdornment: (
