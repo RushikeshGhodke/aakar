@@ -1,0 +1,158 @@
+.training-details-page {
+  display: flex;
+  flex-direction: column; 
+  font-family: Arial, sans-serif;
+  width: calc(100vw - 150px); 
+  margin-left: 140px; 
+  box-sizing: border-box; 
+  overflow-x: hidden; 
+  margin-top: 200px;
+}
+
+.back-button {
+  font-size: 24px;
+  color: #007bff; 
+  cursor: pointer;
+  margin-right: 5px; 
+  padding-top: 5px;
+}
+
+.back-button:hover {
+  color: #0056b3; 
+}
+.dash-header {
+  background-color: white;
+  height: 50px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  padding-top: 20px !important;
+  padding-left: 30px;
+  font-size: larger;
+  font-weight: bolder;
+}
+.training-details-section {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  box-sizing:content-box; 
+  width: 100%; 
+}
+.add-session-details-section,
+.session-details-section {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  box-sizing: border-box; 
+  width: 100%; 
+}
+
+
+.training-form, .session-form {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 10px; 
+}
+
+.training-form input, .session-form input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 5px;
+  box-sizing: border-box; 
+}
+
+.add-session-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-right: 5vw;
+}
+
+.add-training-header {
+  display: flex;
+  justify-content:space-between ;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-right: 20px;
+
+}
+
+.save-button {
+  background-color: #0056b3; 
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-sizing: border-box;
+  margin-left: 65vw;
+}
+
+.employeeenrolled-button {
+  background-color: #0056b3; 
+  color: white;
+  width:200px;
+  padding: 10px 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-sizing: border-box; 
+  margin-left: 65vw;
+}
+
+.employeeenrolled-button:hover, .save-button:hover {
+  background-color:#007bff; 
+}
+
+.session-table {
+  width: 100%;
+  border-collapse: collapse;
+  box-sizing: border-box; 
+}
+
+.session-table th,
+.session-table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.session-table th {
+  background-color: #f1f1f1;
+  color: #333;
+}
+
+.session-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+
+.skills-bubbles-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skill-bubble {
+  background-color: white;
+  color: black;
+  padding: 3px 8px;
+  border-radius: 15px;
+  border: 2px solid #0061A1;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 15px;
+  margin-top: 3px;
+}
+
+.Toastify__toast {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 100%; 
+}

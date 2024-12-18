@@ -1,10 +1,8 @@
 import React from 'react';
-import {Outlet, useNavigate} from 'react-router-dom';
+import {Outlet} from 'react-router-dom';
 import Sidebar from '../src/components/Sidebar.jsx';
 import Navbar from '../src/components/NavBar.jsx';
-import {useDispatch, useSelector} from 'react-redux';
-import Cookies from 'js-cookie';
-import {getCookie} from "./utils/cookie.js";
+import {useSelector} from 'react-redux';
 import './Layout.css'
 
 const Layout = () => {

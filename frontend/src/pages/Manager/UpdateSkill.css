@@ -1,0 +1,80 @@
+.update-container {
+  margin-left: 120px;
+  width: calc(100% - 150px); /* Adjust width to account for margin */
+  margin-top: 140px;
+  position: relative; /* Add relative positioning */
+  padding-bottom: 20px;
+}
+
+.skill-save{
+  width: 80px;
+  margin-right: 10px;
+}
+.update-head {
+  margin-left: 45px;
+}
+.Add-skill {
+  background-color: white;
+  color: #0061A1;
+  border: 2px solid #0061A1;
+  padding: 10px 20px;
+  padding-top: 13px;
+  padding-bottom: 33px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+  width: 165px;
+  height: 46px;
+  border-radius: 15px;
+  justify-content: center;
+  position: absolute; /* Position absolute */
+  right: 0; /* Align to the right edge */
+  top: 0px; 
+  margin-right: 60px;
+  margin-bottom: 50px !important;
+}
+
+.Add-skill:hover {
+  background-color: rgb(215, 245, 255);
+}
+.input-box {
+  width: calc(100% - 120px); 
+  height: auto; /* Allow auto height */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 60px;
+  border-radius: 10px;
+  border: 1.5px solid #7D7D7D;
+  background: #FFF;
+  gap: 15px;
+  margin-left: 50px;
+  padding-left: 20px;
+}
+
+.input-box .Textfield, 
+.input-box .DSearchbar {
+  height: 40px; /* Ensure consistent height */
+}
+
+.skill-action-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* Adjust spacing between icons */
+}
+
+.skill-action-buttons button {
+  background-color: white;
+  color: #0061A1;
+  border: none;
+  cursor: pointer;
+  padding: 5px; 
+  transition: opacity 0.3s ease;
+}
+
+.skill-action-buttons button:hover{
+  background-color: #0061A1;
+  color: white;
+}
+

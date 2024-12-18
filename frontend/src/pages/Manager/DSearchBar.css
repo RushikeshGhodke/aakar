@@ -1,0 +1,13 @@
+.DSearchbar-container{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  
+  border-radius: 20px;
+  margin-top: 25px !important;
+  border: none;
+  height: 80px !important;
+}
+.searchbar-container-gap {
+  margin-left: 20px; 
+}

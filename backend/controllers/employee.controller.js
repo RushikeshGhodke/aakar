@@ -153,7 +153,7 @@ export const addEmployee = asyncHandler(async (req, res) => {
          employeeDOB, employeeJoinDate, employeeGender, employeePhone, employeeEmail, 
          employeePassword, employeeAccess) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
+        `;
 
     const employeeData = [
         employee.employee.customEmployeeId,
@@ -305,6 +305,7 @@ export const getAllEmployees = asyncHandler(async (req, res) => {
         e.employeePhone, 
         e.employeeEmail, 
         e.employeeAccess, 
+        e.createdAt,
         e.employeeEndDate, 
         d.departmentName, 
         ds.designationName, 
@@ -332,6 +333,8 @@ export const getAllEmployees = asyncHandler(async (req, res) => {
         // Group the results
         const employeesMap = {};
 
+      
+      
         results.forEach((row) => {
             const customEmployeeId = row.customEmployeeId;
 
@@ -351,6 +354,7 @@ export const getAllEmployees = asyncHandler(async (req, res) => {
                         employeePhone: row.employeePhone,
                         employeeEmail: row.employeeEmail,
                         employeeAccess: row.employeeAccess,
+                        createdAt: row.createdAt,
                         employeeEndDate: row.employeeEndDate,
                     },
                     jobProfiles: [],
@@ -369,6 +373,7 @@ export const getAllEmployees = asyncHandler(async (req, res) => {
 
         // Convert the map to an array of grouped objects
         const employees = Object.values(employeesMap);
+        console.log(employees)
 
         res.status(200).json(employees);
     });

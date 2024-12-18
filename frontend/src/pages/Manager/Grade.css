@@ -1,0 +1,28 @@
+.matrix {
+    display: grid;
+    grid-template-columns: repeat(2, 20px); /* 2 columns of equal width */
+    grid-template-rows: repeat(2, 20px);    /* 2 rows of equal height */
+    gap: 2px; /* Adjust this value to increase or decrease the gap */
+  }
+  
+  .cell {
+    width: 20px;  /* Set the width */
+    height: 20px; /* Set the height to the same as width for square shape */
+    background-color: #B9D9EB;
+    transition: background-color 0.3s;
+    border-radius: 8px; /* You can keep the border-radius if you want rounded squares */
+  }
+  
+  .cell.hovered,
+  .cell.clicked {
+    background-color: #0061A1; /* The same blue color for both hover and click effects */
+  }
+  
+  /* Centering the Grade component */
+  .cell-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  

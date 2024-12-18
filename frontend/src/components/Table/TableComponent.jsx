@@ -1,35 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
+    Box,
+    Menu,
+    MenuItem,
+    Paper,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
-    TableRow,
-    Paper,
     TablePagination,
+    TableRow,
     TableSortLabel,
-    Button,
-    Menu,
-    MenuItem,
-    Box,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import downloadasexcel from '../../assets/downlaodasexcel.svg';
+import downloadaspdf from '../../assets/downlaodaspdf.svg';
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable'; // Required for auto table
-import * as XLSX from 'xlsx'; // Required for Excel
+import 'jspdf-autotable';
+import * as XLSX from 'xlsx';
 import './TableComponent.css';
-import Searchbar from "../../pages/employee/Searchbox/Searchbar.jsx";
-import { FiDownload } from "react-icons/fi";
+import Searchbar from '../../components/Searchbox/Searchbar.jsx';
+import { FiDownload } from 'react-icons/fi';
 
-
-const TableComponent = ({ rows, columns, linkBasePath, itemName }) => {
+const TableComponent = ({ rows, columns, linkBasePath, defaultSortOrder = 'newest', itemKey, itemLabel, navigateTo, searchLabel }) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [order, setOrder] = useState('asc');
-    const [orderBy, setOrderBy] = useState(columns[0]?.id || '');
+    const [order, setOrder] = useState(defaultSortOrder === 'newest' ? 'desc' : 'asc'); // Default order based on prop
+    const [orderBy, setOrderBy] = useState('createdAt'); // Sort by 'createdAt' by default
     const [anchorEl, setAnchorEl] = useState(null);
+    const [sortMenuAnchorEl, setSortMenuAnchorEl] = useState(null);
+    const [sortedRows, setSortedRows] = useState([]);
+
+    // Sync sortedRows with rows whenever rows prop changes, and apply default sorting
+    useEffect(() => {
+        const sorted = [...rows].sort((a, b) => {
+            const dateA = new Date(a.createdAt || 0);
+            const dateB = new Date(b.createdAt || 0);
+            return defaultSortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+        });
+        setSortedRows(sorted);
+    }, [rows, defaultSortOrder]);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -42,37 +54,27 @@ const TableComponent = ({ rows, columns, linkBasePath, itemName }) => {
 
     const handleRequestSort = (property) => {
         const isAsc = orderBy === property && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
+        const newOrder = isAsc ? 'desc' : 'asc';
+        setOrder(newOrder);
         setOrderBy(property);
+
+        // Apply sorting to sortedRows
+        const sorted = [...sortedRows].sort(getComparator(newOrder, property));
+        setSortedRows(sorted);
     };
 
-    const stableSort = (array, comparator) => {
-        const stabilizedThis = array.map((el, index) => [el, index]);
-        stabilizedThis.sort((a, b) => {
-            const order = comparator(a[0], b[0]);
-            if (order !== 0) return order;
-            return a[1] - b[1];
-        });
-        return stabilizedThis.map((el) => el[0]);
-    };
-
-    const getComparator = (order, orderBy) => {
-        return order === 'desc'
-            ? (a, b) => descendingComparator(a, b, orderBy)
-            : (a, b) => -descendingComparator(a, b, orderBy);
-    };
-
-    const descendingComparator = (a, b, orderBy) => {
-        if (a[orderBy] === undefined || b[orderBy] === undefined) {
-            return 0; // Handle undefined properties
-        }
-        if (b[orderBy] < a[orderBy]) {
-            return -1;
-        }
-        if (b[orderBy] > a[orderBy]) {
-            return 1;
-        }
+    const descendingComparator = (a, b, property) => {
+        if (!a[property]) return 1;
+        if (!b[property]) return -1;
+        if (a[property] < b[property]) return -1;
+        if (a[property] > b[property]) return 1;
         return 0;
+    };
+
+    const getComparator = (order, property) => {
+        return order === 'desc'
+            ? (a, b) => descendingComparator(b, a, property)
+            : (a, b) => descendingComparator(a, b, property);
     };
 
     const handleDownloadClick = (event) => {
@@ -83,73 +85,109 @@ const TableComponent = ({ rows, columns, linkBasePath, itemName }) => {
         setAnchorEl(null);
     };
 
-    const downloadFile = (fileType) => {
-        if (fileType === 'excel') {
-            exportToExcel(rows, columns);
-        } else if (fileType === 'pdf') {
-            exportToPDF(rows, columns);
-        }
-        handleClose();
+    const handleSortByCreatedAt = (order) => {
+        const sorted = [...rows].sort((a, b) => {
+            const dateA = new Date(a.createdAt || 0);
+            const dateB = new Date(b.createdAt || 0);
+            return order === 'newest' ? dateB - dateA : dateA - dateB;
+        });
+        setSortedRows(sorted);
+        setSortMenuAnchorEl(null);
     };
 
-    const exportToExcel = (rows, columns) => {
+    const exportToExcel = (rows) => {
         const worksheet = XLSX.utils.json_to_sheet(rows);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
         XLSX.writeFile(workbook, 'data.xlsx');
     };
 
-    const exportToPDF = (rows, columns) => {
+    const exportToPDF = (rows) => {
         const doc = new jsPDF();
         doc.autoTable({
-            head: [columns.map(col => col.label)],
-            body: rows.map(row => columns.map(col => row[col.id])),
+            head: [columns.map((col) => col.label)],
+            body: rows.map((row) => columns.map((col) => row[col.id])),
         });
-        doc.save('' +
-            '.pdf');
+        doc.save('data.pdf');
+    };
+
+    const downloadFile = (type) => {
+        type === 'excel' ? exportToExcel(sortedRows) : exportToPDF(sortedRows);
+        handleClose();
     };
 
     return (
         <Box>
-            <div className={`flex items-center justify-between`}>
+            <div
+                className="flex items-center justify-between"
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+            >
                 <Searchbar
-                    items={rows}
-                    itemKey="de" // Assuming each employee has an empId as a unique key
-                    itemLabel={itemName} // Name to search by
-                    navigateTo={linkBasePath}
+                    items={sortedRows}
+                    itemKey={itemKey}
+                    itemLabel={itemLabel}
+                    navigateTo={navigateTo}
+                    searchLabel={searchLabel}
                 />
-                <div className={`hover:cursor-pointer border-2 border-[#0061A1] rounded px-4 py-1.5 font-semibold text-[#0061A1] flex justify-between items-center gap-3`} onClick={handleDownloadClick}>
-                    <FiDownload />
-                    <p>Download</p>
-                </div>
-                <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}
+
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '16px',
+                    }}
                 >
-                    <MenuItem onClick={() => downloadFile('excel')}>Download as Excel</MenuItem>
-                    <MenuItem onClick={() => downloadFile('pdf')}>Download as PDF</MenuItem>
-                </Menu>
+                    {/* SortBy Button */}
+                    <div
+                        className="hover:cursor-pointer border-2 border-[#0061A1] rounded px-4 py-1.5 font-semibold text-[#0061A1] flex justify-between items-center gap-3"
+                        onClick={(event) => setSortMenuAnchorEl(event.currentTarget)}
+                    >
+                        <FiDownload />
+                        <p>Sort By</p>
+                    </div>
+                    <Menu
+                        anchorEl={sortMenuAnchorEl}
+                        open={Boolean(sortMenuAnchorEl)}
+                        onClose={() => setSortMenuAnchorEl(null)}
+                    >
+                        <MenuItem onClick={() => handleSortByCreatedAt('newest')}>
+                            Newest First
+                        </MenuItem>
+                        <MenuItem onClick={() => handleSortByCreatedAt('oldest')}>
+                            Oldest First
+                        </MenuItem>
+                    </Menu>
+
+                    {/* Download Button */}
+                    <div
+                        className="hover:cursor-pointer border-2 border-[#0061A1] rounded px-4 py-1.5 font-semibold text-[#0061A1] flex justify-between items-center gap-3"
+                        onClick={handleDownloadClick}
+                    >
+                        <FiDownload />
+                        <p>Download</p>
+                    </div>
+                    <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
+                        <MenuItem onClick={() => downloadFile('excel')}>
+                            <img src={downloadasexcel} alt="Excel" />
+                            Excel
+                        </MenuItem>
+                        <MenuItem onClick={() => downloadFile('pdf')}>
+                            <img src={downloadaspdf} alt="PDF" />
+                            PDF
+                        </MenuItem>
+                    </Menu>
+                </div>
             </div>
 
+            {/* Table Section */}
             <Paper className="table-container">
                 <TableContainer className="custom-scrollbar">
                     <Table aria-label="data table">
                         <TableHead>
                             <TableRow>
                                 <TableCell
+                                    style={{ color: '#0061A1', fontWeight: 'bold', textAlign: 'left' }}
                                     align="left"
-                                    sx={{
-                                        fontWeight: 'bold',
-                                        backgroundColor: '#FFFFFF',
-                                        color: '#002773',
-                                        fontSize: '16px',
-                                        textAlign: 'left',
-                                        fontFamily: 'Inter, sans-serif',
-                                        position: 'sticky',
-                                        top: 0,
-                                        zIndex: 1,
-                                    }}
                                 >
                                     Sr. No.
                                 </TableCell>
@@ -157,18 +195,11 @@ const TableComponent = ({ rows, columns, linkBasePath, itemName }) => {
                                     <TableCell
                                         key={column.id}
                                         align={column.align}
-                                        sx={{
-                                            fontWeight: 'bold',
-                                            backgroundColor: '#FFFFFF',
-                                            color: '#002773',
-                                            fontSize: '16px',
-                                            textAlign: 'left',
-                                            fontFamily: 'Inter, sans-serif',
-                                            position: 'sticky',
-                                            top: 0,
-                                            zIndex: 1,
-                                        }}
                                         sortDirection={orderBy === column.id ? order : false}
+                                        style={{
+                                            color: '#0061A1', // Text color
+                                            fontWeight: 'bold', // Makes it bold
+                                        }}
                                     >
                                         <TableSortLabel
                                             active={orderBy === column.id}
@@ -181,9 +212,8 @@ const TableComponent = ({ rows, columns, linkBasePath, itemName }) => {
                                 ))}
                             </TableRow>
                         </TableHead>
-
                         <TableBody>
-                            {stableSort(rows, getComparator(order, orderBy))
+                            {sortedRows
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
                                     const RowComponent = linkBasePath ? Link : 'tr';
@@ -191,14 +221,17 @@ const TableComponent = ({ rows, columns, linkBasePath, itemName }) => {
                                         ? {
                                             component: RowComponent,
                                             to: `${linkBasePath}/${row.empId || row.deptId || row.projectId}`,
-                                            sx: { cursor: 'pointer', textDecoration: 'none' },
+                                            sx: {
+                                                cursor: 'pointer',
+                                                textDecoration: 'none',
+                                            },
                                         }
                                         : { component: 'tr' };
 
                                     return (
                                         <TableRow key={uuidv4()} {...rowProps}>
                                             <TableCell align="left">
-                                                {(page * rowsPerPage) + index + 1}
+                                                {page * rowsPerPage + index + 1}
                                             </TableCell>
                                             {columns.map((column) => (
                                                 <TableCell key={column.id} align={column.align}>
@@ -213,7 +246,7 @@ const TableComponent = ({ rows, columns, linkBasePath, itemName }) => {
                 </TableContainer>
                 <TablePagination
                     component="div"
-                    count={rows.length}
+                    count={sortedRows.length}
                     page={page}
                     onPageChange={handleChangePage}
                     rowsPerPage={rowsPerPage}

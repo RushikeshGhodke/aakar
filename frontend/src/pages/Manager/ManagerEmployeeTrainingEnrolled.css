@@ -1,0 +1,23 @@
+.employeetrainingenrolled-page {
+    width: 80vw !important;
+    margin-left: 95px !important;
+  }
+  
+  .employeetrainingenrolled-title{
+    margin-top: 90px;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 0.5px;
+    margin-left: 5px !important;
+    border-radius: 8px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    font-size: 15px;
+  }
+  .employeetrainingenrolled-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }

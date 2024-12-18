@@ -1,0 +1,7 @@
+.department-search-bar {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 50vh; /* Make the div take the full viewport height */
+}
+

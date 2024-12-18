@@ -1,0 +1,164 @@
+/* Center-aligns the content with proper spacing */
+.show-training-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  width: 800px;
+  max-width: 1200px; /* Adjust max width for responsiveness */
+  margin: auto;
+  margin-top: 50px;
+}
+
+/* Styles the search bar area */
+.show-training-searchbar {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* Adds spacing around the skill bar */
+.skill-bar {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 600px;
+}
+
+/* Button styling for the "Send to Training" */
+.sendToTraining {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.sendToTraining:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+/* Container for department cards with proper spacing */
+.department-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  padding: 20px;
+  gap: 20px;
+  background-color: #f7f9fc;
+  border-radius: 10px;
+  margin-top: 30px;
+}
+
+/* Styling for individual department cards */
+.department-card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 350px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.department-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.department-card.expanded {
+  background-color: #eef5ff;
+  border: 2px solid #007bff;
+}
+
+/* Styling for department name text */
+.department-name {
+  font-size: 18px;
+  color: #333;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Styles for the employee table container */
+.employee-table {
+  margin-top: 40px;
+  width: 100%;
+  max-width: 1200px;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for the table itself */
+.tableComponent {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #333;
+}
+
+.tableComponent th,
+.tableComponent td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.tableComponent th {
+  background-color: #f2f2f2;
+  font-size: 16px;
+  color: #444;
+  font-weight: bold;
+}
+
+.tableComponent td {
+  font-size: 14px;
+}
+
+.tableComponent .clickable-header {
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.tableComponent .clickable-header:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+/* Ensure responsiveness on smaller screens */
+@media (max-width: 768px) {
+  .department-cards-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .department-card {
+    max-width: 90%;
+  }
+
+  .employee-table {
+    padding: 10px;
+  }
+
+  .tableComponent th,
+  .tableComponent td {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .sendToTraining {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+}
