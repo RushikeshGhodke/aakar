@@ -15,6 +15,7 @@ import AddDepartment from "./pages/department/AddDepartment.jsx";
 import DepartmentProfile from "./pages/department/DepartmentProfile.jsx";
 import Profile from "./pages/Profile.jsx";
 import Modal from "react-modal";
+import DesignationDashboard from "./pages/designation/DesignationDashboard.jsx";
 
 Modal.setAppElement('#root');
 
@@ -110,7 +111,7 @@ const App = () => {
                             path="/designations"
                             element={
                                 <PrivateRoute>
-                                    <Profile/>
+                                    <DesignationDashboard/>
                                 </PrivateRoute>
                             }
                         />

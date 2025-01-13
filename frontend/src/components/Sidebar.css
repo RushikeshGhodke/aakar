@@ -55,7 +55,7 @@
 }
 
 .sidebar:hover {
-    width: 190px;
+    width: 225px;
 }
 
 .sidebar:hover .menu-text {
@@ -65,4 +65,52 @@
 
 .menu-icon {
     margin: 15px;
+}
+
+.submenu {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out; /* Smooth animation */
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+    row-gap: 0.5vmax;
+}
+
+.submenu.expanded {
+    max-height: 300px;
+    opacity: 1;
+}
+
+.main-item {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 15px;
+}
+
+.main-item-content {
+    display: flex;
+    align-items: center;
+}
+
+.chevron {
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.sidebar:hover .chevron {
+    display: flex;
+}
+
+.submenu .icon-container {
+    padding-left: 10px;
+}
+
+.submenu .icon-container:hover {
+    background-color: #1b5b8a;
 }

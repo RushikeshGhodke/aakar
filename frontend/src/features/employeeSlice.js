@@ -4,7 +4,7 @@ import axios from 'axios';
 
 // Async Thunks for API calls
 export const getAllEmployees = createAsyncThunk('employees/getAllEmployees', async () => {
-    const response = await axios.get('http://localhost:3000/api/v1/employee/getAllEmployees', {
+    const response = await axios.get('http://localhost:4000/api/v1/employee/getAllEmployees', {
         withCredentials: true,
     });
     console.log(response.data);
@@ -13,9 +13,9 @@ export const getAllEmployees = createAsyncThunk('employees/getAllEmployees', asy
 
 export const addEmployee = createAsyncThunk('employees/addEmployee', async (employeeData) => {
     console.log(employeeData);
-    const response = await axios.post('http://localhost:3000/api/v1/employee/addEmployee', employeeData);
+    const response = await axios.post('http://localhost:4000/api/v1/employee/addEmployee', employeeData);
     console.log(response.data);
-    return response.data.data; // Extracting the `data` object from the response
+    return response.data.data; // Extracting the `data  ` object from the response
 });
 
 export const updateEmployee = createAsyncThunk(
@@ -29,7 +29,7 @@ export const updateEmployee = createAsyncThunk(
         };
 
         const response = await axios.put(
-            `http://localhost:3000/api/v1/employee/updateEmployee/${employeeId}`,
+            `http://localhost:4000/api/v1/employee/updateEmployee/${employeeId}`,
             data
         );
         return response.data;
@@ -38,7 +38,7 @@ export const updateEmployee = createAsyncThunk(
 
 export const deleteEmployee = createAsyncThunk('employees/deleteEmployee', async (employeeId) => {
     try {
-        const response = await axios.post('http://localhost:3000/api/v1/employee/deleteEmployee', { employeeId });
+        const response = await axios.post('http://localhost:4000/api/v1/employee/deleteEmployee', { employeeId });
         return employeeId; // Return employeeId for removing it from the state
     } catch (error) {
         console.error('Error deleting employee:', error);
@@ -53,7 +53,7 @@ export const moveEmployee = createAsyncThunk(
             console.log("Moving employees", employeeIds, "to department", toDepartmentId);
 
             // Call the moveEmployee API
-            const response = await axios.post("http://localhost:3000/api/v1/employee/moveEmployee", {
+            const response = await axios.post("http://localhost:4000/api/v1/employee/moveEmployee", {
                 employeeIds,
                 toDepartmentId,
             });
@@ -76,7 +76,7 @@ export const deleteMultipleEmployees = createAsyncThunk(
     async (employeeIds, { dispatch, rejectWithValue }) => {
         try {
             const response = await axios.post(
-                'http://localhost:3000/api/v1/employee/deleteMultipleEmployees', employeeIds
+                'http://localhost:4000/api/v1/employee/deleteMultipleEmployees', employeeIds
             );
 
             await dispatch(getAllEmployees());

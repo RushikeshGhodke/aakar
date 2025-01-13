@@ -133,6 +133,11 @@ const generateAccessAndRefreshToken = async (employeeId) => {
 
 export const loginEmployee = asyncHandler(async (req, res) => {
     const { employeeEmail, employeePassword } = req.body;
+    console.log(employeeEmail, employeePassword);
+
+    const tempHash = await bcrypt.hash(employeePassword, 10);
+    console.log("Temp Hash: ", tempHash);
+
 
     // Find employee by email
     connection.query(
@@ -147,6 +152,8 @@ export const loginEmployee = asyncHandler(async (req, res) => {
 
             // Check if the password matches
             const isPasswordValid = await bcrypt.compare(employeePassword, employee.employeePassword);
+            console.log(isPasswordValid);
+
             if (!isPasswordValid) {
                 return res.status(401).json({ message: "Invalid email or password" });
             }
@@ -301,6 +308,7 @@ export const addEmployee = asyncHandler(async (req, res) => {
 
     // Hash the password asynchronously
     const hashedPassword = await bcrypt.hash(employee.employee.employeePassword, 10);
+    console.log("Hash Password", hashedPassword)
 
     // Insert the employee into the employee table
     const insertEmployeeQuery = `

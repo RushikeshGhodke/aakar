@@ -6,7 +6,7 @@ import axios from 'axios';
 export const fetchDesignations = createAsyncThunk(
     'designation/fetchDesignations',
     async () => {
-        const response = await axios.get('http://localhost:3000/api/v1/designation/getAllDesignations');
+        const response = await axios.get('http://localhost:4000/api/v1/designation/getAllDesignations');
         console.log(response.data.data);
         return response.data.data;
     }
