@@ -1,181 +1,172 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
+    Box,
+    Checkbox,
+    Paper,
+    Switch,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
     TableRow,
-    Checkbox,
-    Paper,
     Typography,
-    Box,
-    Collapse,
-    IconButton,
-    Button
 } from '@mui/material';
-import { Add, Visibility, Edit, Delete } from '@mui/icons-material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const AccessTable = ({ access, setAccess }) => {
-    // Initial state for checkboxes
     const initialState = {
-        Employee: [false, false, false, false], // Create, Read, Update, Delete for Employee
-        Project: [false, false, false, false],  // Create, Read, Update, Delete for Project
-        TicketTracking: [false, false, false, false], // Create, Read, Update, Delete for Ticket Tracking
-        EmpTraining: [false, false, false, false], // Create, Read, Update, Delete for Employee Training
+        HRManagement: { active: false, subOptions: [] },
+        ProjectManagement: { active: false, subOptions: [] },
+        TrainingManagement: { active: false, subOptions: [] },
+        TicketTracking: { active: false, subOptions: [] },
     };
 
-    const [checkboxState, setCheckboxState] = useState(initialState);
-    const [open, setOpen] = useState(false);
+    const subOptions = {
+        HRManagement: ['Employee Management', 'Department Management', 'Designation Management'],
+        ProjectManagement: ['Project Management', 'Substage Management'],
+        TrainingManagement: ['Employee Training', 'Course Management'],
+        TicketTracking: [
+            'View self created tickets',
+            'View department created tickets',
+            'View department assigned tickets',
+            'View all tickets',
+            'Change ticket status',
+            'Change ticket assignee',
+            'Get and release ticket',
+            'Reopen ticket',
+        ],
+    };
 
-    // Handle checkbox change
-    const handleCheckboxChange = (row, index) => {
-        setCheckboxState(prevState => {
-            const updatedState = { ...prevState };
-            updatedState[row][index] = !updatedState[row][index];
-            updateAccessString(updatedState);
-            return updatedState;
+    const [moduleState, setModuleState] = useState(initialState);
+
+    const handleToggleModule = (module) => {
+        setModuleState((prevState) => ({
+            ...prevState,
+            [module]: {
+                ...prevState[module],
+                active: !prevState[module].active,
+                subOptions: prevState[module].active
+                    ? [] // Reset sub-options when toggling off
+                    : Array(subOptions[module].length).fill({ Add: false, Read: false, Update: false, Delete: false }),
+            },
+        }));
+    };
+
+    const handleCheckboxChange = (module, subOptionIndex, action) => {
+        setModuleState((prevState) => {
+            const updatedSubOptions = [...prevState[module].subOptions];
+            updatedSubOptions[subOptionIndex] = {
+                ...updatedSubOptions[subOptionIndex],
+                [action]: !updatedSubOptions[subOptionIndex][action],
+            };
+
+            return {
+                ...prevState,
+                [module]: {
+                    ...prevState[module],
+                    subOptions: updatedSubOptions,
+                },
+            };
         });
     };
 
-    // Update access string based on checkbox state
-    const updateAccessString = (state) => {
-        const accessString = [
-            ...Object.values(state).map(row => row.map(value => value ? '1' : '0').join('')),
-            '0'.repeat(196) // Keep the remaining bits as 0
-        ].join('');
-        setAccess(accessString);
-    };
+    // Generate access string and update setAccess whenever moduleState changes
+    useEffect(() => {
+        const generateAccessString = () => {
+            const groups = Object.keys(moduleState).map((module) => {
+                const { active, subOptions } = moduleState[module];
+                if (!active) return '0'.repeat(52); // All bits 0 if module is inactive
 
-    // Reset checkboxes to initial state
-    const handleReset = () => {
-        setCheckboxState(initialState);
-        updateAccessString(initialState); // Ensure access string is reset
-    };
+                const bits = ['1']; // First bit for module active state
+                subOptions.forEach((subOption) => {
+                    ['Add', 'Read', 'Update', 'Delete'].forEach((action) => {
+                        bits.push(subOption[action] ? '1' : '0');
+                    });
+                });
+                return bits.join('').padEnd(52, '0'); // Pad to 52 bits
+            });
 
-    // Toggle collapse section
-    const handleToggle = () => {
-        setOpen(!open);
-    };
+            return groups.join(',');
+        };
+
+        const newAccessString = generateAccessString();
+        setAccess(newAccessString); // Update the access string in parent state
+    }, [moduleState, setAccess]);
 
     return (
-        <Box sx={{ maxWidth: 500, mt: '10px', mb: '25px'}} >
-            <Box
-                onClick={handleToggle}
-                sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                }}
-            >
-                <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{
-                        fontFamily: 'Inter',
-                        fontSize: '18px',
-                        marginBottom: '10px',
-                        color: '#7D7D7D',
-                        flexGrow: 1,
-                        fontWeight: 'bold',
-                    }}
-                >
-                    Access
-                </Typography>
-                <IconButton size="small" sx={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }} >
-                    <ExpandMoreIcon />
-                </IconButton>
-            </Box>
-            <Collapse in={open}>
-                <Box sx={{ mb: 2 }}>
-                    <Button
-                        sx={{
-                            width: '95px',
-                            color: '#0061A1',
-                            border: '3px solid #0061A1',
-                            fontWeight: '600'
-                        }}
-                        onClick={handleReset}
-                    >
-                        Reset
-                    </Button>
-                </Box>
-                <TableContainer
-                    component={Paper}
-                    sx={{
-                        borderRadius: 2,
-                        border: '1px solid #c4c4c4',
-                        boxShadow: 'none',
-                    }}
-                >
-                    <Table sx={{ minWidth: 400 }}>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell></TableCell>
-                                <TableCell align="center">
-                                    <Box sx={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}>
-                                        <Add fontSize="small" sx={{ color: '#A3A3A3', mb: 0.5 }} />
-                                        <Typography variant="caption" sx={{ color: '#585858', fontFamily: 'Inter' }}>Add</Typography>
-                                    </Box>
-                                </TableCell>
-                                <TableCell align="center">
-                                    <Box sx={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}>
-                                        <Visibility fontSize="small" sx={{ color: '#A3A3A3', mb: 0.5 }} />
-                                        <Typography variant="caption" sx={{ color: '#585858', fontFamily: 'Inter' }}>Read</Typography>
-                                    </Box>
-                                </TableCell>
-                                <TableCell align="center">
-                                    <Box sx={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}>
-                                        <Edit fontSize="small" sx={{ color: '#A3A3A3', mb: 0.5 }} />
-                                        <Typography variant="caption" sx={{ color: '#585858', fontFamily: 'Inter' }}>Update</Typography>
-                                    </Box>
-                                </TableCell>
-                                <TableCell align="center">
-                                    <Box sx={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}>
-                                        <Delete fontSize="small" sx={{ color: '#A3A3A3', mb: 0.5 }} />
-                                        <Typography variant="caption" sx={{ color: '#585858', fontFamily: 'Inter' }}>Delete</Typography>
-                                    </Box>
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
+        <div className="add-employee-details my-1 bg-white rounded">
+            <h3 style={{ fontSize: '18px', marginBottom: '10px', color: '#7D7D7D', fontWeight: 'bold' }}>Manage Access</h3>
+            <Box sx={{ maxWidth: 700, marginLeft: '10px', marginTop: '20px' }}>
+                {Object.keys(subOptions).map((module) => (
+                    <Box key={module} sx={{ marginBottom: '20px' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                            <Typography
+                                variant="h6"
+                                sx={{
+                                    fontWeight: 'semibold',
+                                    flexGrow: 1,
+                                    fontSize: '17px',
+                                    marginBottom: '10px',
+                                    color: '#000',
+                                }}
+                            >
+                                {module.replace(/([A-Z])/g, ' $1').trim()}
+                            </Typography>
+                            <Switch
+                                checked={moduleState[module].active}
+                                onChange={() => handleToggleModule(module)}
+                                color="primary"
+                                inputProps={{ 'aria-label': `${module} toggle` }}
+                            />
+                        </Box>
 
-                        <TableBody>
-                            {['Employee', 'Project', 'TicketTracking', 'EmpTraining'].map((row) => (
-                                <TableRow key={row}>
-                                    <TableCell
-                                        component="th"
-                                        scope="row"
-                                        sx={{
-                                            borderBottom: '1px solid #e0e0e0',
-                                            fontFamily: 'Inter',
-                                            color: '#585858',
-                                        }}
-                                    >
-                                        {row}
-                                    </TableCell>
-                                    {['Add', 'Read', 'Update', 'Delete'].map((action, index) => (
-                                        <TableCell
-                                            align="center"
-                                            key={action}
-                                            sx={{
-                                                borderBottom: '1px solid #e0e0e0',
-                                            }}
-                                        >
-                                            <Checkbox
-                                                checked={checkboxState[row][index]}
-                                                onChange={() => handleCheckboxChange(row, index)}
-                                                sx={{ color: '#A3A3A3' }}
-                                            />
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Collapse>
-        </Box>
+                        {moduleState[module].active && (
+                            <TableContainer
+                                component={Paper}
+                                sx={{
+                                    borderRadius: 2,
+                                    border: '1px solid #c4c4c4',
+                                    boxShadow: 'none',
+                                }}
+                            >
+                                <Table sx={{ minWidth: 400 }}>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Options</TableCell>
+                                            <TableCell align="center">Add</TableCell>
+                                            <TableCell align="center">Read</TableCell>
+                                            <TableCell align="center">Update</TableCell>
+                                            <TableCell align="center">Delete</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {subOptions[module].map((subOption, index) => (
+                                            <TableRow key={subOption}>
+                                                <TableCell component="th" scope="row">
+                                                    {subOption}
+                                                </TableCell>
+                                                {['Add', 'Read', 'Update', 'Delete'].map((action) => (
+                                                    <TableCell key={action} align="center">
+                                                        <Checkbox
+                                                            checked={
+                                                                moduleState[module].subOptions[index]?.[action] || false
+                                                            }
+                                                            onChange={() =>
+                                                                handleCheckboxChange(module, index, action)
+                                                            }
+                                                        />
+                                                    </TableCell>
+                                                ))}
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        )}
+                    </Box>
+                ))}
+            </Box>
+        </div>
     );
 };
 

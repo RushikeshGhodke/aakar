@@ -8,6 +8,7 @@ import AccessTableOutput from "./AccessTableOutput.jsx";
 import { MdAutoDelete } from "react-icons/md";
 import './EmployeeDashboard.css';
 import {Bounce, toast} from "react-toastify";
+import AccessDisplay from "./AccessDisplay.jsx";
 
 function EmployeeProfile() {
     const { id } = useParams();
@@ -136,7 +137,7 @@ function EmployeeProfile() {
                             <span className="text-black text-lg font-semibold">{employee.jobProfiles[0]?.designationName || 'N/A'}</span>
                         </div>
                     </div>
-                    <AccessTableOutput binaryString={employee.employee.employeeAccess} />
+                    <AccessDisplay accessString={employee.employee.employeeAccess} />
                 </section>
 
                 <section className="add-employee-body bg-white px-10 py-1 rounded">
