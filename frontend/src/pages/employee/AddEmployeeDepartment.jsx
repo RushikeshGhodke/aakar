@@ -10,6 +10,8 @@ import { getAllEmployees } from "../../features/employeeSlice.js"; // Import the
 const AddEmployeeDepartment = ({ initialEmployeeDesignations, setEmployeeDesignations }) => {
     const [employeeDesignations, setLocalEmployeeDesignations] = useState(initialEmployeeDesignations || []);
 
+    console.log(initialEmployeeDesignations);
+
     const dispatch = useDispatch();
 
     // Fetch data from Redux store

@@ -1,37 +1,36 @@
-import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {useNavigate} from 'react-router-dom';
-import {getAllEmployees} from '../../features/employeeSlice.js';
-import {FiPlusCircle} from 'react-icons/fi';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { getAllEmployees } from '../../features/employeeSlice.js';
+import { FiPlusCircle } from 'react-icons/fi';
 import Infocard from "../../components/Infocard/Infocard.jsx";
-import TableComponent from "../../components/Table/TableComponent.jsx";
+import GenericTable from "../../components/GenericTable.jsx"
 
 const EmployeeList = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const {employees, loading, error} = useSelector((state) => state.employee);
+    const { employees, loading, error } = useSelector((state) => state.employee);
+
+    const access = useSelector((state) => state?.auth?.user?.employeeAccess)?.split(',');
+    const HRManagementAccess = access[0];
 
     const [rows, setRows] = useState([]);
     const columns = [
-        {id: 'empId', label: 'Employee ID', align: 'left'},
-        {id: 'empName', label: 'Name', align: 'left'},
-        {id: 'empEmail', label: 'Email ID', align: 'left'},
-        {id: 'empJobTitle', label: 'Role', align: 'left'},
-        {id: 'empDept', label: 'Department', align: 'left'},
+        { field: 'empId', headerName: 'Employee ID' },
+        { field: 'empName', headerName: 'Name' },
+        { field: 'empEmail', headerName: 'Email ID' },
+        { field: 'empJobTitle', headerName: 'Role' },
+        { field: 'empDept', headerName: 'Department' },
     ];
 
     useEffect(() => {
-        // console.log("Getting Employee Details")
         dispatch(getAllEmployees());
     }, [dispatch]);
 
-
     useEffect(() => {
-        // console.log(employees)
         if (employees) {
-
             const processedRows = employees.map((data, index) => {
-                const {employee, jobProfiles} = data;
+                const { employee, jobProfiles } = data;
 
                 // Extract and join job profile details
                 const roles = jobProfiles.map((profile) => profile.designationName || "N/A").join(", ");
@@ -47,54 +46,46 @@ const EmployeeList = () => {
                     createdAt: employee?.createdAt,
                 };
             });
-            // console.log(processedRows)
             setRows(processedRows);
         }
     }, [employees]);
-
-    // console.log(rows)
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
 
     return (
-        <div className='dashboard'>
-            <div className='flex justify-between items-end mb-3'>
-                <div className='infocard-container h-max'>
+        <div className="dashboard">
+            <div className="flex justify-between items-end mb-3">
+                <div className="infocard-container h-max">
                     <Infocard
                         icon={`<FiUser />`}
                         number={rows.length}
-                        text={'All Employees'}
-                        className={'selected'}
+                        text={"All Employees"}
+                        className={"selected"}
                     />
                 </div>
-                <button
-                    className="flex border-2 border-[#0061A1] rounded text-[#0061A1] font-semibold p-3 hover:cursor-pointer"
-                    onClick={() => navigate('/employee/addEmployee')}>
-                    <FiPlusCircle style={{marginRight: '10px', width: '25px', height: '25px'}}/>
-                    Add employee
-                </button>
+                {HRManagementAccess[1] === '1' && (
+                    <button
+                        className="flex border-2 border-[#0061A1] rounded text-[#0061A1] font-semibold p-3 hover:cursor-pointer"
+                        onClick={() => navigate('/employee/addEmployee')}
+                    >
+                        <FiPlusCircle style={{ marginRight: '10px', width: '25px', height: '25px' }} />
+                        Add employee
+                    </button>
+                )}
             </div>
 
-            <div className='employee-list-container'>
-                <div className='flex items-center justify-between'>
-                    {/*<Searchbar*/}
-                    {/*    items={rows}*/}
-                    {/*    itemKey="empId" // Assuming each employee has an empId as a unique key*/}
-                    {/*    itemLabel="empName" // Name to search by*/}
-                    {/*    navigateTo="/employee"*/}
-                    {/*/>*/}
-                </div>
-
-                <TableComponent
-                    rows={rows}
+            <div className="employee-list-container">
+                <GenericTable
                     columns={columns}
-                    linkBasePath="/employee"
-                    defaultSortOrder={"oldest"}
-                    itemKey="empId"
-                    itemLabel="empName"
-                    navigateTo="/employee"
-                    searchLabel="Search by Employee Name"
+                    data={rows}
+                    collapsible={false}
+                    selectable={true}
+                    actions={true}
+                    enableSearch={true}
+                    onDelete={(item) => console.log('Delete:', item)}
+                    onEdit={(item) => console.log('Edit:', item)}
+                    onView={(item) => console.log('View:', item)}
                 />
             </div>
         </div>

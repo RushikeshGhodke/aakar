@@ -24,7 +24,7 @@ const AccessTable = ({ access, setAccess }) => {
     const subOptions = {
         HRManagement: ['Employee Management', 'Department Management', 'Designation Management'],
         ProjectManagement: ['Project Management', 'Substage Management'],
-        TrainingManagement: ['Employee Training', 'Course Management'],
+        TrainingManagement: ['Employee Status', 'Skills', 'Skill Matrix', 'Assign Training', 'Training Plan', 'Training Status'],
         TicketTracking: [
             'View self created tickets',
             'View department created tickets',

@@ -12,6 +12,9 @@ const DesignationDashboard = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const access = useSelector((state) =>  state?.auth?.user?.employeeAccess).split(',')
+    const HRManagementAccess = access[0];
+
     // Fetch working departments on component mount
     useEffect(() => {
         dispatch(getAllEmployees());
@@ -42,12 +45,12 @@ const DesignationDashboard = () => {
                         className={'selected'}
                     />
                 </div>
-                <button
+                {HRManagementAccess[5] === '1' &&<button
                     className="flex border-2 border-[#0061A1] rounded text-[#0061A1] font-semibold p-3 hover:cursor-pointer"
                 >
                     <FiPlusCircle style={{marginRight: '10px', width: '25px', height: '25px'}}/>
                     Add designation
-                </button>
+                </button>}
             </div>
 
             <TableComponent rows={rows} columns={columns} linkBasePath={`/designation`} itemLabel={'Designations'} searchLabel={'Search by designation name'} defaultSortOrder={'oldest'}/>

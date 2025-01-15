@@ -12,6 +12,9 @@ const DepartmentDashboard = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const access = useSelector((state) =>  state?.auth?.user?.employeeAccess).split(',')
+    const HRManagementAccess = access[0];
+
     // Fetch working departments on component mount
     useEffect(() => {
         dispatch(getAllEmployees());
@@ -44,15 +47,13 @@ const DepartmentDashboard = () => {
                         className={'selected'}
                     />
                 </div>
-                <button
+                {HRManagementAccess[9] === '1' && <button
                     className="flex border-2 border-[#0061A1] rounded text-[#0061A1] font-semibold p-3 hover:cursor-pointer"
                     onClick={() => navigate('/department/addDepartment')}>
                     <FiPlusCircle style={{marginRight: '10px', width: '25px', height: '25px'}}/>
                     Add department
-                </button>
+                </button>}
             </div>
-            {/* Searchbar Component */}
-            {/* <Searchbar lst={rows} /> */}
 
             {/* Table Component */}
             <TableComponent rows={rows} columns={columns} linkBasePath={`/department`} itemLabel={'Department'} searchLabel={'Search by department name'} defaultSortOrder={'oldest'}/>
