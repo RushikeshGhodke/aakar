@@ -15,6 +15,8 @@ function EmployeeProfile() {
     const dispatch = useDispatch(); // Use dispatch hook to dispatch actions
     const allEmployeesData = useSelector((state) => state?.employee); // Fetch employees from Redux store
     const employeesData = allEmployeesData.employees;
+    const access = useSelector((state) =>  state?.auth?.user?.employeeAccess).split(',')
+    const HRManagementAccess = access[0];
 
     console.log(allEmployeesData)
 
@@ -95,19 +97,24 @@ function EmployeeProfile() {
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
-                        <button
-                            onClick={handleEdit}
-                            className="flex justify-center items-center gap-3 bg-[#0061A1] text-white py-1.5 px-2 rounded">
-                            <FiEdit size={20} className="save-icon" />
-                            <span>Edit details</span>
-                        </button>
-                        <button
-                            className="flex justify-center items-center gap-3 bg-[#0061A1] text-white py-1.5 px-2 rounded"
-                            onClick={handleDelete}
-                        >
-                            <MdAutoDelete size={20} className="delete-icon" />
-                            <span>Delete Employee</span>
-                        </button>
+                        {
+                            HRManagementAccess[3] &&
+                            <button
+                                onClick={handleEdit}
+                                className="flex justify-center items-center gap-3 bg-[#0061A1] text-white py-1.5 px-2 rounded">
+                                <FiEdit size={20} className="save-icon"/>
+                                <span>Edit details</span>
+                            </button>
+                        }
+                        {
+                            HRManagementAccess[4] &&
+                            <button
+                                className="flex justify-center items-center gap-3 bg-[#0061A1] text-white py-1.5 px-2 rounded"
+                                onClick={handleDelete}>
+                                <MdAutoDelete size={20} className="delete-icon"/>
+                                <span>Delete Employee</span>
+                            </button>
+                        }
                     </div>
                 </section>
 

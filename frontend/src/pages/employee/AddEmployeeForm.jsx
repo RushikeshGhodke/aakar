@@ -68,14 +68,16 @@ const AddEmployeeForm = ({ employeeInputValues, setEmployeeInputValues, handleFo
 
                     {/* Employee Id */}
                     <TextField
-                        label="Employee Id"
+                        label="Custom Employee Id"
                         variant="outlined"
+                        autoComplete="off"
                         value={employeeInputValues.customEmployeeId}
                         onChange={handleChange}
-                        name={'customEmployeeId'}
-                        type={"input"}
+                        name="customEmployeeId"
+                        type="text"
                         sx={{ width: "300px" }}
                     />
+
 
                     {/* Employee Name */}
                     <TextField

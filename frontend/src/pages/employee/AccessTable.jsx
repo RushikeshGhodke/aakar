@@ -23,7 +23,7 @@ const AccessTable = ({ access, setAccess }) => {
 
     const subOptions = {
         HRManagement: ['Employee Management', 'Department Management', 'Designation Management'],
-        ProjectManagement: ['Project Management', 'Substage Management'],
+        ProjectManagement: ['Project Management', 'Stage Management', 'Substage Management'],
         TrainingManagement: ['Employee Status', 'Skills', 'Skill Matrix', 'Assign Training', 'Training Plan', 'Training Status'],
         TicketTracking: [
             'View self created tickets',
@@ -37,7 +37,43 @@ const AccessTable = ({ access, setAccess }) => {
         ],
     };
 
-    const [moduleState, setModuleState] = useState(initialState);
+    const parseAccessString = (accessString) => {
+        if (!accessString) return initialState;
+
+        const modules = accessString.split(',');
+        const parsedState = { ...initialState };
+
+        Object.keys(parsedState).forEach((module, moduleIndex) => {
+            const moduleAccess = modules[moduleIndex] || '';
+            const active = moduleAccess[0] === '1';
+            const subOptionsBits = moduleAccess.slice(1);
+
+            parsedState[module].active = active;
+
+            if (active) {
+                const subOptionsArray = [];
+                for (let i = 0; i < subOptions[module].length; i++) {
+                    const startIndex = i * 4;
+                    const subOptionBits = subOptionsBits.slice(startIndex, startIndex + 4);
+                    subOptionsArray.push({
+                        Add: subOptionBits[0] === '1',
+                        Read: subOptionBits[1] === '1',
+                        Update: subOptionBits[2] === '1',
+                        Delete: subOptionBits[3] === '1',
+                    });
+                }
+                parsedState[module].subOptions = subOptionsArray;
+            }
+        });
+
+        return parsedState;
+    };
+
+    const [moduleState, setModuleState] = useState(parseAccessString(access));
+
+    useEffect(() => {
+        setModuleState(parseAccessString(access));
+    }, [access]);
 
     const handleToggleModule = (module) => {
         setModuleState((prevState) => ({
@@ -45,9 +81,9 @@ const AccessTable = ({ access, setAccess }) => {
             [module]: {
                 ...prevState[module],
                 active: !prevState[module].active,
-                subOptions: prevState[module].active
-                    ? [] // Reset sub-options when toggling off
-                    : Array(subOptions[module].length).fill({ Add: false, Read: false, Update: false, Delete: false }),
+                subOptions: !prevState[module].active
+                    ? Array(subOptions[module].length).fill({ Add: false, Read: false, Update: false, Delete: false })
+                    : [],
             },
         }));
     };
@@ -70,20 +106,19 @@ const AccessTable = ({ access, setAccess }) => {
         });
     };
 
-    // Generate access string and update setAccess whenever moduleState changes
     useEffect(() => {
         const generateAccessString = () => {
             const groups = Object.keys(moduleState).map((module) => {
                 const { active, subOptions } = moduleState[module];
-                if (!active) return '0'.repeat(52); // All bits 0 if module is inactive
+                if (!active) return '0'.repeat(52);
 
-                const bits = ['1']; // First bit for module active state
+                const bits = ['1'];
                 subOptions.forEach((subOption) => {
                     ['Add', 'Read', 'Update', 'Delete'].forEach((action) => {
                         bits.push(subOption[action] ? '1' : '0');
                     });
                 });
-                return bits.join('').padEnd(52, '0'); // Pad to 52 bits
+                return bits.join('').padEnd(52, '0');
             });
 
             return groups.join(',');
@@ -91,7 +126,9 @@ const AccessTable = ({ access, setAccess }) => {
 
         const newAccessString = generateAccessString();
         setAccess(newAccessString); // Update the access string in parent state
+        console.log('Updated Access String:', newAccessString); // Log the access string
     }, [moduleState, setAccess]);
+
 
     return (
         <div className="add-employee-details my-1 bg-white rounded">

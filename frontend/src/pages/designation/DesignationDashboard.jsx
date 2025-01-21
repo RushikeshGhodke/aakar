@@ -45,12 +45,14 @@ const DesignationDashboard = () => {
                         className={'selected'}
                     />
                 </div>
-                {HRManagementAccess[5] === '1' &&<button
-                    className="flex border-2 border-[#0061A1] rounded text-[#0061A1] font-semibold p-3 hover:cursor-pointer"
-                >
-                    <FiPlusCircle style={{marginRight: '10px', width: '25px', height: '25px'}}/>
-                    Add designation
-                </button>}
+                {
+                    HRManagementAccess[9] &&
+                    <button
+                        className="flex border-2 border-[#0061A1] rounded text-[#0061A1] font-semibold p-3 hover:cursor-pointer">
+                        <FiPlusCircle style={{marginRight: '10px', width: '25px', height: '25px'}}/>
+                        Add designation
+                    </button>
+                }
             </div>
 
             <TableComponent rows={rows} columns={columns} linkBasePath={`/designation`} itemLabel={'Designations'} searchLabel={'Search by designation name'} defaultSortOrder={'oldest'}/>

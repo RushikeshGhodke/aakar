@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { FiArrowLeftCircle, FiEdit } from 'react-icons/fi';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { updateEmployee } from '../../features/employeeSlice.js'; // Redux actions
+import { updateEmployee } from '../../features/employeeSlice.js';
 import AddEmployeeForm from './AddEmployeeForm.jsx';
 import AddEmployeeDepartment from './AddEmployeeDepartment.jsx';
 import AccessTable from './AccessTable.jsx';
@@ -12,8 +12,8 @@ import AccessTable from './AccessTable.jsx';
 const EditEmployee = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { id } = useParams(); // Assume route param is /employees/edit/:employeeId
-    const { employees, loading, error } = useSelector((state) => state.employee);
+    const { id } = useParams();
+    const { employees } = useSelector((state) => state.employee);
 
     const [employeeInputValues, setEmployeeInputValues] = useState({
         customEmployeeId: '',
@@ -34,31 +34,21 @@ const EditEmployee = () => {
     const [access, setAccess] = useState('');
 
     useEffect(() => {
-        // Find the employee details by employeeId from the Redux store
         const employeeData = employees.find((item) => item.employee.customEmployeeId === id);
 
         if (employeeData) {
             const { employee, jobProfiles } = employeeData;
-
-            // Populate the state with fetched employee data
             setEmployeeInputValues({
                 ...employee,
                 employeeEndDate: employee.employeeEndDate || null,
             });
 
-            const normalizedJobProfiles = Array.isArray(jobProfiles)
-                ? jobProfiles
-                : [jobProfiles];
-
-            setEmployeeDesignations(normalizedJobProfiles);
+            setEmployeeDesignations(Array.isArray(jobProfiles) ? jobProfiles : [jobProfiles]);
             setAccess(employee.employeeAccess || '');
-            console.log(normalizedJobProfiles);
-            console.log(employee.employeeAccess);
         } else {
             toast.error('Employee details not found in Redux store.');
         }
     }, [employees, id]);
-
 
     const notify = () =>
         toast.success('Employee Updated Successfully!', {
@@ -76,11 +66,11 @@ const EditEmployee = () => {
     const handleSave = (e) => {
         e.preventDefault();
 
-        // Structure the payload
+        // Create payload object
         const payload = {
             employee: {
                 ...employeeInputValues,
-                employeeAccess: access,
+                employeeAccess: access, // Updated access string
                 employeeEndDate: employeeInputValues.employeeEndDate || null,
             },
             jobProfiles: employeeDesignations.map((designation) => ({
@@ -91,7 +81,10 @@ const EditEmployee = () => {
             })),
         };
 
-        dispatch(updateEmployee({ employeeId, payload }))
+        // Dispatch Redux action
+        console.log(payload);
+        dispatch(updateEmployee({ employeeId: payload.employee.employeeId, payload }))
+            .unwrap()
             .then(() => {
                 notify();
                 navigate('/employees');
@@ -100,6 +93,7 @@ const EditEmployee = () => {
                 toast.error('Failed to update employee.');
             });
     };
+
 
     return (
         <div className="edit-employee-dashboard">
@@ -128,12 +122,15 @@ const EditEmployee = () => {
                     employeeInputValues={employeeInputValues}
                     setEmployeeInputValues={setEmployeeInputValues}
                 />
+
                 <AddEmployeeDepartment
-                    employeeDesignations={employeeDesignations}
+                    initialEmployeeDesignations={employeeDesignations}
                     setEmployeeDesignations={setEmployeeDesignations}
                 />
-                <AccessTable access={access} setAccess={setAccess} />
+
+                <AccessTable access={access} setAccess={setAccess} mode={"edit"} />
             </section>
+            <ToastContainer />
         </div>
     );
 };

@@ -17,7 +17,7 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material';
 const AccessDisplay = ({ accessString }) => {
     const subOptions = {
         HRManagement: ['Employee Management', 'Department Management', 'Designation Management'],
-        ProjectManagement: ['Project Management', 'Substage Management'],
+        ProjectManagement: ['Project Management', 'Stage Management', "Substage Management"],
         TrainingManagement: ['Employee Training', 'Course Management'],
         TicketTracking: [
             'View self created tickets',
